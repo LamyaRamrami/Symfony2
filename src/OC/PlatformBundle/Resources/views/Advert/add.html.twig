@@ -1,0 +1,44 @@
+{# src/OC/PlatformBundle/Resources/views/Advert/add.html.twig #}
+
+
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+    Ajouter un post - {{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+
+  <h2>Ajouter une article</h2>
+
+   <div class="well">
+
+        {{ form(form) }}
+
+    </div>
+  <p>
+    Attention : cette article sera ajoutée directement
+    sur la page d'accueil après validation du formulaire.
+  </p>
+
+   {#<h2>Ajouter une annonce</h2>#}
+
+    {#{{ include("OCPlatformBundle:Advert:form.html.twig") }}#}
+
+    {#<div class="well">#}
+
+        {#{{ form(form) }}#}
+
+    {#</div>#}
+    {#<p>#}
+        {#<a href="{{ path('oc_platform_add', {'id': advert.id}) }}" class="btn btn-default">#}
+            {#<i class="glyphicon glyphicon-chevron-left"></i>#}
+            {#Retour à l'annonce#}
+        {#</a>#}
+    {#</p>#}
+    {#{% if advert.image is not null %}#}
+        {#<img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">#}
+    {#{% endif %}#}
+
+{% endblock %}
