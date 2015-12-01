@@ -18,56 +18,62 @@ use OC\PlatformBundle\Entity\Image;
 
 class AdvertController extends Controller
 {
-  public function indexAction($page)
-  {
-    // On ne sait pas combien de pages il y a
-    // Mais on sait qu'une page doit être supérieure ou égale à 1
-    if ($page < 1) {
-      // On déclenche une exception NotFoundHttpException, cela va afficher
-      // une page d'erreur 404 (qu'on pourra personnaliser plus tard d'ailleurs)
-      throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
+    public function indexAction($page)
+    {
+        $listAdverts= $this->getAll();
+        return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
+            'listAdverts' =>  $listAdverts
+        ));
     }
 
-    // Ici, on récupérera la liste des annonces, puis on la passera au template
-
-    // Mais pour l'instant, on ne fait qu'appeler le template
 
 
 
+      private function getAll(){
+        $em=$this->getDoctrine()
+            ->getManager();
+        $repository = $em->getRepository('OCPlatformBundle:Advert');
+        $listAdverts= $repository->findAll();
+        return $listAdverts;
+    }
+    private function getAdvert($id){
+        $repository = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('OCPlatformBundle:Advert')
+        ;
+        $advert = $repository->find($id);
+    return $advert;
+    }
 
-    return $this->render('OCPlatformBundle:Advert:index.html.twig', array('listAdverts' => array() ));
-   
-  }
+
+
 
   public function viewAction($id)
-  {
-    // On récupère le repository
-    $repository = $this->getDoctrine()
-      ->getManager()
-      ->getRepository('OCPlatformBundle:Advert')
-    ;
-
-    // On récupère l'entité correspondante à l'id $id
-    $advert = $repository->find($id);
-
-    // $advert est donc une instance de OC\PlatformBundle\Entity\Advert
-    // ou null si l'id $id  n'existe pas, d'où ce if :
-    if (null === $advert) {
-      throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+    {
+        $advert=$this->getAdvert($id);
+        if (null === $advert) {
+            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+        }
+        return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
+            'advert' => $advert
+        ));
     }
 
-    // Le render ne change pas, on passait avant un tableau, maintenant un objet
-    return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-      'advert' => $advert
-    ));
-  }
+
+
+
+
+
+
+
+
 
   public function addAction(Request $request)
   {
     // Création de l'entité
     $advert = new Advert();
     $advert->setTitle('HelpX : La nouvelle tendance chez les backpakers !.');
-    $advert->setAuthor('Alexandre');
+    $advert->setAuthor('Alexandra');
     $advert->setContent("Nous recherchons un développeur Symfony2 débutant sur Lyon. Blabla…");
 
     $formBuilder = $this->get('form.factory')->createBuilder('form', $advert);
@@ -86,12 +92,7 @@ class AdvertController extends Controller
     // On récupère l'EntityManager
     $em = $this->getDoctrine()->getManager();
      if ($form->isValid()) {
-                $image = new Image();
-                $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');
-                $image->setAlt('Job de rêve');
-                // On lie l'image à l'annonce
-                $advert->setImage($image);
-                $em->persist($image);
+             
                 $em->persist($advert);
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
@@ -102,7 +103,7 @@ class AdvertController extends Controller
 
 
 
-      public function editAction($id, Request $request)
+       public function editAction($id, Request $request)
     {
         $advert =$this->getAdvert($id);
             $formBuilder=$this->get('form.factory')->createBuilder('form', $advert);
@@ -110,6 +111,7 @@ class AdvertController extends Controller
             ->add('title','text')
             ->add('content','textarea')
             ->add('published','checkbox')
+           
             ->add('save','submit');
         $form = $formBuilder->getForm();
         $formBuilder->add('published', 'checkbox', array('required' => false));
@@ -117,6 +119,7 @@ class AdvertController extends Controller
         if ($form->isValid()) {
             $em=$this->getDoctrine()
                 ->getManager();
+            
             $em->persist($advert);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Le post a bien été enregistrée.');
@@ -131,26 +134,27 @@ class AdvertController extends Controller
 
   public function deleteAction($id)
   {
-    // Ici, on récupérera l'annonce correspondant à $id
-
-    // Ici, on gérera la suppression de l'annonce en question
+     $advert=$this->getAdvert($id);
+        $em=$this->getDoctrine()
+            ->getManager();
+      
+        $em->flush();
 
     return $this->render('OCPlatformBundle:Advert:delete.html.twig');
   }
 
-  public function menuAction($limit)
+    public function menuAction($limit = 5 )
   {
-    // On fixe en dur une liste ici, bien entendu par la suite
-    // on la récupérera depuis la BDD !
-    $listAdverts = array(
-      array('id' => 2, 'title' => 'HelpX : La nouvelle tendance chez les backpakers !'),
-      array('id' => 5, 'title' => 'Comment obtenir son billet à moindre prix !'),
-      array('id' => 9, 'title' => 'Le paradis à petit prix ! ')
+    $listAdverts = $this->getDoctrine()
+      ->getManager()
+      ->getRepository('OCPlatformBundle:Advert')
+      ->findBy(
+        array(),                 // Pas de critère
+        array('date' => 'desc'), // On trie par date décroissante
+        $limit,                  // On sélectionne $limit annonces
+        0                        // À partir du premier
     );
-
     return $this->render('OCPlatformBundle:Advert:menu.html.twig', array(
-      // Tout l'intérêt est ici : le contrôleur passe
-      // les variables nécessaires au template !
       'listAdverts' => $listAdverts
     ));
   }

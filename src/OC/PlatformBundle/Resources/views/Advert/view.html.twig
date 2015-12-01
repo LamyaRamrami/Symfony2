@@ -13,9 +13,6 @@
 
 
 {# On vérifie qu'une image soit bien associée à l'annonce #}
-{% if advert.image is not null %}
-  <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
-{% endif %}
 
   <div class="well">
     {{ advert.content }}

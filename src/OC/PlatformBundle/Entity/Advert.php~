@@ -11,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="OC\PlatformBundle\Entity\AdvertRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class Advert
 {
@@ -24,7 +23,7 @@ class Advert
 
 
 
-  /**
+    /**
    * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
    */
   private $image;

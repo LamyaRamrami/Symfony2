@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Advert
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="CS\BlogBundle\Entity\AdvertRepository")
+ * @ORM\Entity(repositoryClass="OC\PlatformBundle\Entity\AdvertRepository")
  */
 class Advert
 {
@@ -203,15 +203,6 @@ class Advert
   }
 
 
-  public function setImage(Image $image = null)
-  {
-    $this->image = $image;
-  }
-
-  public function getImage()
-  {
-    return $this->image;
-  }
 
 
     /**

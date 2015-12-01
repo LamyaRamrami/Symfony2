@@ -1,0 +1,19 @@
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+    Modifier l'article - {{ parent() }}
+{% endblock %}
+
+{% block ocplatform_body %}
+
+    <h2>Modifier un article/h2>
+
+    {{ include("OCPlatformBundle:Advert:form.html.twig") }}
+
+    <p>
+        Vous avez modifié un article déja existant. 
+    </p>
+
+   
+
+{% endblock %}

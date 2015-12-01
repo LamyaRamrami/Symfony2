@@ -1,0 +1,21 @@
+{# src/OC/PlatformBundle/Resources/views/Advert/edit.html.twig #}
+
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+    Supprimer l'article - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <h2>L'article a bien été supprimé !! </h2>
+
+
+    <p>
+        <a href="{{ path('oc_platform_home', {'id': 1}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour à l'acceuil
+        </a>
+    </p>
+
+{% endblock %}
