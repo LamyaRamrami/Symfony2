@@ -1,0 +1,8 @@
+source_dir: ./
+coponent_depth : 1
+languages:
+- html
+- css
+- javascript
+- php
+- xml 
